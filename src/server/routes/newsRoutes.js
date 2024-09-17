@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
+const NEWS_API_KEY = '9ccdda8c2b094889902abf27127d87cc';
 const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines';
 const NEWS_API_SEARCH_URL = 'https://newsapi.org/v2/everything';
 
@@ -20,6 +20,8 @@ router.get('/', async (req, res) => {
       title: article.title,
       description: article.description,
       url: article.url,
+      urlToImage: article.urlToImage,
+      publishedAt: article.publishedAt,
     }));
 
     res.json(articles);
@@ -44,6 +46,8 @@ router.get('/search', async (req, res) => {
       title: article.title,
       description: article.description,
       url: article.url,
+      urlToImage: article.urlToImage,
+      publishedAt: article.publishedAt,
     }));
 
     res.json(articles);
