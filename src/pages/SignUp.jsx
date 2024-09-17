@@ -3,20 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from "@/components/ui/use-toast";
 
 const SignUp = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { signup } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement actual signup logic with backend
-    // For now, we'll just simulate a successful signup
-    login({ name, email });
-    navigate('/');
+    setIsLoading(true);
+    try {
+      await signup({ name, email, password });
+      toast({
+        title: "Sign up successful",
+        description: "Welcome to NewsAI!",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Sign up failed",
+        description: error.message || "An error occurred during sign up. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,7 +60,9 @@ const SignUp = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <Button type="submit" className="w-full">Sign Up</Button>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Signing up...' : 'Sign Up'}
+        </Button>
       </form>
     </div>
   );
